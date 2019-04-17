@@ -5,9 +5,9 @@ var mongoose = require('mongoose');
 var PetSchema = new mongoose.Schema({
     name: { type: String, required: true },
 	category: { type: String, required: true },
-	breed: String,
-	age: Number,
-	gender: String,
+	breed: { type: String, default: 'unknown' },
+	age: { type: Number, default: -1 },
+	gender: { type: String, default: 'unknown' },
 	owner: { type: String, required: true },
 	questions: [ String ],
 	favoritedBy: [ String ],
@@ -20,7 +20,7 @@ var PetSchema = new mongoose.Schema({
         type: String,
         enum: [ 'low', 'medium', 'high' ]
     },
-	description: String,
+	description: { type: String, default: 'No descriptions' },
 	price: { type: Number, default: 0 },
 	dateCreated: { type: Date, default: Date.now }
 });

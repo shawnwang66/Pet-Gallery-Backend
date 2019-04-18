@@ -1,6 +1,8 @@
 var express = require('express'),
     router = express.Router();
 const petMongoose = require('../models/pets.js');
+const userMongoose = require('../models/user.js');
+
 const util = require('../util/util.js');
 const statusCode = util.statusCode;
 
@@ -25,18 +27,38 @@ petRoute.get((req, svrRes) => {
 
 petRoute.post((req, svrRes) => {
     const body = new petMongoose(req.body);
+    // get user id who create the pet
+    // !need to add one field
+    let user_id = req.body.user_id;
+    console.log(user_id)
+
     body.save((err, dbRes) => {
         if (err)
             svrRes.status(statusCode.SERVER_ERR).send({
                message: "Server error!",
                data: {}
             });
-        else
+        else{
+            // after saved, update User Schema
+            userMongoose.updateOne(
+                {'_id':user_id},
+                {'$push':{petsCreated:dbRes._id}}, (err,res)=>{
+                    if(!err){
+                        console.log("OK")
+                    }
+                })
+
             svrRes.status(statusCode.OK).send({
                 message: "OK",
                 data: dbRes
             });
+
+
+        }
+
     });
+
+
 });
 
 const petIDRoute = router.route('/:id');

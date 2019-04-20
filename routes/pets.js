@@ -46,7 +46,7 @@ petRoute.post((req, svrRes) => {
                     if(!err){
                         console.log("OK")
                     }
-                })
+                });
 
             svrRes.status(statusCode.OK).send({
                 message: "OK",

@@ -6,5 +6,4 @@ module.exports = function (app, router) {
     app.use('/api/pets', require('./pets.js'));
     app.use('/api/favorite', require('./favorite.js'));
     app.use('/api/image', require('./image.js'));
-
 };

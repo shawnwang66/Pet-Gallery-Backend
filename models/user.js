@@ -16,7 +16,6 @@ var UserSchema = new mongoose.Schema({
     imageURL: {type: String, default: 'default image'},
     ratings: [Number],
     dateCreated: Date
-
 });
 
 // Export the Mongoose model

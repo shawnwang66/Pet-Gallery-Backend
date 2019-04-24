@@ -11,7 +11,9 @@ const statusCode = util.statusCode;
 // Process /pet API
 const petRoute = router.route('/');
 petRoute.get((req, svrRes) => {
-    petMongoose.find({}, (err, dbRes) => {
+    // console.log(req.query.where)
+    let where = req.query.where === undefined ? {} : JSON.parse(req.query.where);
+    petMongoose.find(where, (err, dbRes) => {
         if (err)
             svrRes.status(statusCode.SERVER_ERR).send({
                message: "Server error!",

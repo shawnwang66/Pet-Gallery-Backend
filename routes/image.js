@@ -29,13 +29,13 @@ const storage = cloudinaryStorage({
 const parser = multer({ storage: storage });
 
 
-imageUpload.get(function(req, res) {
-    res.send(`
-        <form action='/api/image/upload' method="post" enctype="multipart/form-data">
-          <input type='file' name='image' />
-          <p><input type="submit" value="Upload"/></p>
-        </form>`);
-});
+// imageUpload.get(function(req, res) {
+//     res.send(`
+//         <form action='/api/image/upload' method="post" enctype="multipart/form-data">
+//           <input type='file' name='image' />
+//           <p><input type="submit" value="Upload"/></p>
+//         </form>`);
+// });
 
 // for user to change his picture
 imageUpload.post( parser.single("image"), async (req, res) => {

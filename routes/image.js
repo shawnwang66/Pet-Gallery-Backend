@@ -2,11 +2,83 @@ var express = require('express'),
     router = express.Router();
 const petMongoose = require('../models/pets.js');
 const userMongoose = require('../models/user.js');
+const multer = require("multer");
+const cloudinary = require("cloudinary");
+const cloudinaryStorage = require("multer-storage-cloudinary");
+const passport = require('passport');
 
 const util = require('../util/util.js');
 const statusCode = util.statusCode;
 
 const imageRoute = router.route('/');
+const imageUpload = router.route('/upload')
+
+cloudinary.config({
+    cloud_name: 'hbgto9dnt',
+    api_key: '626735841878728',
+    api_secret: '2_VCm07pTQCCwoyu6rYEuset1Os'
+});
+
+const storage = cloudinaryStorage({
+    cloudinary: cloudinary,
+    folder: "demo",
+    allowedFormats: ["jpg", "png"],
+    transformation: [{ width: 500, height: 500, crop: "limit" }]
+});
+
+const parser = multer({ storage: storage });
+
+
+imageUpload.get(function(req, res) {
+    res.send(`
+        <form action='/api/image/upload' method="post" enctype="multipart/form-data">
+          <input type='file' name='image' />
+          <p><input type="submit" value="Upload"/></p>
+        </form>`);
+});
+
+// for user to change his picture
+imageUpload.post( parser.single("image"), async (req, res) => {
+    // console.log(image.url)
+    try{
+        await passport.authenticate('jwt', {}, (ret) => {
+            // console.log("hi")
+            if (ret !== null){
+                // console.log("in")
+                const image = {};
+                image.url = req.file.url;
+                image.id = req.file.public_id;
+                // console.log(image.url)
+                userMongoose.updateOne({_id:ret._id},{imageURL:image.url},function (err,result) {
+                    if (err){
+                        return res.status(500).send({message: err});
+                    }
+                    else{
+                        return res.status(200).send({
+                            message: "Success",
+                            data: {image:image.url}
+                        });
+                    }
+
+                })
+            }
+            else {
+                return res.status(401).send({
+                    message: "Unauthorized"
+                });
+            }
+        })(req, res);
+
+    }
+    catch (e) {
+        return res.status(500).send({message: e});
+
+    }
+
+});
+
+
+
 
 // update image in Pet Schema
 imageRoute.post((req,res)=>{

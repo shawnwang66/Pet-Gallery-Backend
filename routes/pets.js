@@ -24,7 +24,7 @@ const categoryMap = ['cat','dog'];
 petRoute.get((req, svrRes) => {
     let selectJSON = {};
     let chain = petMongoose.find({}, selectJSON);
-    
+
     if (req.query.where !== undefined) {
         let where = JSON.parse(req.query.where);
         chain = chain.find(where);
@@ -63,7 +63,8 @@ petRoute.get((req, svrRes) => {
 
     if (req.query.energyLevel !== undefined) {
         let energyLevel = JSON.parse(req.query.energyLevel);
-        chain = chain.find({"energyLevel": energyLevel});
+        const energyLevelMap = ['low', 'medium', 'high'];
+        chain = chain.find({"energyLevel": energyLevelMap[energyLevel]});
     }
 
     if (req.query.price !== undefined) {

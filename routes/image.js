@@ -11,7 +11,8 @@ const util = require('../util/util.js');
 const statusCode = util.statusCode;
 
 const imageRoute = router.route('/');
-const imageUpload = router.route('/upload')
+const imageUploadSingle = router.route('/upload/single')
+const imageUploadMul = router.route('/upload/multiple')
 
 cloudinary.config({
     cloud_name: 'hbgto9dnt',
@@ -38,8 +39,7 @@ const parser = multer({ storage: storage });
 // });
 
 // for user to change his picture
-imageUpload.post( parser.single("image"), async (req, res) => {
-    // console.log(image.url)
+imageUploadSingle.post(parser.single("image"), async (req, res) => {
     try{
         await passport.authenticate('jwt', {}, (ret) => {
             // console.log("hi")
@@ -60,6 +60,38 @@ imageUpload.post( parser.single("image"), async (req, res) => {
                         });
                     }
 
+                })
+            }
+            else {
+                return res.status(401).send({
+                    message: "Unauthorized"
+                });
+            }
+        })(req, res);
+
+    }
+    catch (e) {
+        return res.status(500).send({message: e});
+
+    }
+
+});
+
+imageUploadMul.post( parser.array("petInputImage"), async (req, res) => {
+    try{
+        await passport.authenticate('jwt', {}, (ret) => {
+            // console.log("hi")
+            if (ret !== null){
+                // console.log("in")
+                const files = req.files;
+                let image = [];
+                files.forEach((file)=>{
+                    image.push(file.url)
+                })
+                // console.log(image)
+                return res.status(200).send({
+                    message: "OK",
+                    img:image
                 })
             }
             else {

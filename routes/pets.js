@@ -14,6 +14,10 @@ const statusCode = util.statusCode;
  * age is a mapping of 0 to 3 to [(Puppy, Kitten), Young, Adult, Senior]
  * price is a mapping of 0 1 2 to [<500USD, 500-2000USD, >2000USD]
  * energy level is 0 to 2
+ * reference:
+ * https://stackoverflow.com/questions/26814456/how-to-get-all-the-values-that-contains-part-of-a-string-using-mongoose-find
+ * we need to set options to i to use it as non case sensitive
+ * for where we need to pass in {'input': queryString}
  */
 const petRoute = router.route('/');
 const categoryMap = ['cat','dog'];
@@ -23,7 +27,13 @@ petRoute.get((req, svrRes) => {
 
     if (req.query.where !== undefined) {
         let where = JSON.parse(req.query.where).input;
-        console.log(where);
+        chain = chain.find({$or: [
+                {'name': {$regex: where, $options: 'i'}},
+                {'breed': {$regex: where, $options: 'i'}},
+                {'description': {$regex: where, $options: 'i'}},
+                {'category': {$regex: where, $options: 'i'}},
+            ]});
+
     }
 
     if (req.query.type !== undefined) {

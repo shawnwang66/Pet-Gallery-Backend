@@ -24,14 +24,19 @@ const categoryMap = ['cat','dog'];
 petRoute.get((req, svrRes) => {
     let selectJSON = {};
     let chain = petMongoose.find({}, selectJSON);
-
+    
     if (req.query.where !== undefined) {
-        let where = JSON.parse(req.query.where).input;
+        let where = JSON.parse(req.query.where);
+        chain = chain.find(where);
+    }
+
+    if (req.query.filter !== undefined) {
+        let filter = JSON.parse(req.query.filter).input;
         chain = chain.find({$or: [
-                {'name': {$regex: where, $options: 'i'}},
-                {'breed': {$regex: where, $options: 'i'}},
-                {'description': {$regex: where, $options: 'i'}},
-                {'category': {$regex: where, $options: 'i'}},
+                {'name': {$regex: filter, $options: 'i'}},
+                {'breed': {$regex: filter, $options: 'i'}},
+                {'description': {$regex: filter, $options: 'i'}},
+                {'category': {$regex: filter, $options: 'i'}},
             ]});
 
     }

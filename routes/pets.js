@@ -21,6 +21,11 @@ petRoute.get((req, svrRes) => {
     let selectJSON = {};
     let chain = petMongoose.find({}, selectJSON);
 
+    if (req.query.where !== undefined) {
+        let where = JSON.parse(req.query.where).input;
+        console.log(where);
+    }
+
     if (req.query.type !== undefined) {
         let type = JSON.parse(req.query.type);
         chain = chain.find({"category": categoryMap[type]});
@@ -69,7 +74,7 @@ petRoute.get((req, svrRes) => {
     } else {
         chain = chain.limit(100);
     }
-    
+
 
     chain.find({}, (err, dbRes) => {
         if (err)

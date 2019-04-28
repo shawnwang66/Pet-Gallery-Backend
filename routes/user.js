@@ -89,6 +89,24 @@ userIDRoute.get(function (req, res) {
   }
 });
 
+userIDRoute.delete(function (req, res) {
+  try {
+    User.deleteOne({_id: req.params.id},(err, ret) => {
+      if (err) {
+        return res.status(500).send({message: err});
+      }
+      return res.status(200).send({
+        message: "Success",
+        data: ret
+      });
+    });
+  } catch(err) {
+    return res.status(500).send({message: err});
+  }
+});
+
+
+
 
 // This end point is protected by the jwt middle ware
 // in order to get your user's info you must log in and the json web token

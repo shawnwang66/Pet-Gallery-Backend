@@ -196,6 +196,31 @@ petIDRoute.put((req, svrRes) => {
         });
 });
 
+petIDRoute.delete((req, svrRes) => {
+    const id = req.params.id;
+    if (!util.isIdValid(id))
+        svrRes.status(statusCode.NOT_FOUND).send({
+            message: `${id} is not a valid ID`,
+            data: {}
+        });
+    else {
+        petMongoose.deleteOne({'_id': id}, (err, dbRes) => {
+            if (err)
+                svrRes.status(statusCode.SERVER_ERR).send({
+                    message: "Server error!",
+                    data: {}
+                });
+            else
+                svrRes.status(statusCode.OK).send({
+                    message: "OK",
+                    data: dbRes
+                });
+        });
+    }
+});
+
+
+
 
 
 module.exports = router;

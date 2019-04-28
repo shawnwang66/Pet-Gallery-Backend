@@ -7,13 +7,71 @@ const util = require('../util/util.js');
 const statusCode = util.statusCode;
 
 
-
-// Process /pet API
+/**
+ * get endpoint to get all the pets, also have a filter and paging
+ * right now the category have 0 1 mapping to cat and dog
+ * you have to pass in a JSON object for the breed
+ * age is a mapping of 0 to 3 to [(Puppy, Kitten), Young, Adult, Senior]
+ * price is a mapping of 0 1 2 to [<500USD, 500-2000USD, >2000USD]
+ * energy level is 0 to 2
+ */
 const petRoute = router.route('/');
+const categoryMap = ['cat','dog'];
 petRoute.get((req, svrRes) => {
-    // console.log(req.query.where)
-    let where = req.query.where === undefined ? {} : JSON.parse(req.query.where);
-    petMongoose.find(where, (err, dbRes) => {
+    let selectJSON = {};
+    let chain = petMongoose.find({}, selectJSON);
+
+    if (req.query.type !== undefined) {
+        let type = JSON.parse(req.query.type);
+        chain = chain.find({"category": categoryMap[type]});
+    }
+
+    if (req.query.age !== undefined) {
+        let age = JSON.parse(req.query.age);
+        chain = chain.find({"age": age});
+    }
+
+    if (req.query.breed !== undefined) {
+        let breed = JSON.parse(req.query.breed);
+        chain = chain.find(breed);
+    }
+
+    if (req.query.gender !== undefined) {
+        let gender = JSON.parse(req.query.gender);
+        chain = chain.find({"gender": gender});
+    }
+
+    if (req.query.energyLevel !== undefined) {
+        let energyLevel = JSON.parse(req.query.energyLevel);
+        chain = chain.find({"energyLevel": energyLevel});
+    }
+
+    if (req.query.price !== undefined) {
+        let price = JSON.parse(req.query.price);
+        if (price === 0) {
+            chain = chain.find({"price": {$gte: 0}});
+            chain = chain.find({"price": {$lte: 500}});
+
+        } else if (price === 1) {
+            chain = chain.find({"price": {$gte: 500}});
+            chain = chain.find({"price": {$lte: 2000}});
+        } else if (price === 2) {
+            chain = chain.find({"price": {$gte: 2000}});
+        }
+    }
+
+    if (req.query.skip !== undefined) {
+        chain = chain.skip(JSON.parse(req.query.skip));
+    }
+
+    if (req.query.limit !== undefined) {
+        chain = chain.limit(JSON.parse(req.query.limit));
+    } else {
+        chain = chain.limit(100);
+    }
+    
+
+    chain.find({}, (err, dbRes) => {
         if (err)
             svrRes.status(statusCode.SERVER_ERR).send({
                message: "Server error!",
@@ -32,7 +90,6 @@ petRoute.post((req, svrRes) => {
     // get user id who create the pet
     // !need to add one field
     let user_id = req.body.user_id;
-    console.log(user_id)
 
     body.save((err, dbRes) => {
         if (err)
@@ -46,7 +103,6 @@ petRoute.post((req, svrRes) => {
                 {'_id':user_id},
                 {'$push':{petsCreated:dbRes._id}}, (err,res)=>{
                     if(!err){
-                        console.log("OK")
                     }
                 });
 

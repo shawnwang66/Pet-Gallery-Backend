@@ -6,7 +6,7 @@ var PetSchema = new mongoose.Schema({
     name: { type: String, required: true },
 	category: { type: String, required: true },
 	breed: { type: String, default: 'unknown' },
-	age: { type: Number, default: -1 },
+	age: { type: Number, default: 2 },
 	gender: { type: String, default: 'unknown' },
 	owner: { type: String, required: true },
 	questions: [ String ],

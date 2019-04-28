@@ -43,11 +43,13 @@ userRoute.post(function (req, res) {
       username: req.body.username,
       password: req.body.password,
       email: req.body.email,
+      location: req.body.location,
       favoritedPets: [],
       petsCreated: [],
       questionsCreated: [],
       answersCreated:[],
       ratings: [],
+      imageURL: req.body.imageURL,
       dateCreated: new Date()
     });
 

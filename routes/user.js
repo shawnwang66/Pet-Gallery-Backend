@@ -49,6 +49,7 @@ userRoute.post(function (req, res) {
       questionsCreated: [],
       answersCreated:[],
       ratings: [],
+      imageURL: req.body.imgURL,
       dateCreated: new Date()
     });
 

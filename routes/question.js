@@ -75,39 +75,30 @@ const questionIDRoute = router.route('/:id');
  * update a question.
  */
 questionIDRoute.put((req,res)=>{
-    if (req.body.content){
+    questionMongoose.findOne(
+      {_id: req.params.id},
+      (err, ret) => {
+        if (err) {
+          return res.status(500).send({message: err});
+        }
         questionMongoose.updateOne(
-            {'_id':req.params.id},
-            {$set:{content:req.body.content}},(err,dbRes)=>{
-                if (err){
-                    return res.status(statusCode.SERVER_ERR).send({
-                        message: "Server error!",
-                        data: {}
-                    });
-                }
+          {_id: req.params.id},
+          {
+            answers: req.body.answers!==undefined?req.body.answers:ret.answers,
+            upvotedBy: req.body.upvotedBy!==undefined?req.body.upvotedBy:ret.upvotedBy,
+            content: req.body.content!==undefined?req.body.content:ret.content,
+          },
+          (err, ret) => {
+            if (err) {
+              return res.status(500).send({message: err});
             }
-        )
-    }
-    if (req.body.upvote){
-        questionMongoose.updateOne(
-            {'_id':req.params.id},
-            {$set:{upvote:req.body.upvote}},(err,dbRes)=>{
-                if (err) {
-                    return res.status(statusCode.SERVER_ERR).send({
-                        message: "Server error!",
-                        data: {}
-                    });
-                }
-            }
-        )
-    }
-
-    questionMongoose.findOne({'_id':req.params.id},(err,dbRes)=>{
-        return res.status(statusCode.OK).send({
-            message: "OK",
-            data: dbRes
-        });
-    })
+            return res.status(200).send({
+              message: "Success",
+              data: ret
+            });
+          });
+      }
+    );
 });
 
 const questionPetRoute = router.route('/pet/:id');

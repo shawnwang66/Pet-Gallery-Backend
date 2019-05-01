@@ -55,6 +55,16 @@ answerRoute.post((req,res)=> {
     })
 });
 
+
+const answerIDRoute = router.route('/:id');
+
+/**
+ * update a question.
+ */
+answerIDRoute.put((req,res)=>{
+
+});
+
 const answerQuestionRoute = router.route('/question/:id');
 
 answerQuestionRoute.get((req,res)=>{

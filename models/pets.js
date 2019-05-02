@@ -12,6 +12,7 @@ var PetSchema = new mongoose.Schema({
 	questions: [ String ],
 	favoritedBy: [ String ],
 	imageURLs: [ String ],
+	frontImageRatio: { type: Number },
 	size: {
         type: String,
         enum: [ 'small', 'medium', 'large' ]

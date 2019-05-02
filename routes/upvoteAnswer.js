@@ -8,10 +8,10 @@ const statusCode = util.statusCode;
 
 
 
-const upvoteQuestionRoute = router.route('/');
+const upvoteAnswerRoute = router.route('/');
 // add favourites
 
-upvoteQuestionRoute.post(async (req,res)=>{
+upvoteAnswerRoute.post(async (req,res)=>{
   let id = req.body.id;
   try {
     await passport.authenticate('jwt', {}, (ret) => {
@@ -54,7 +54,7 @@ upvoteQuestionRoute.post(async (req,res)=>{
 });
 
 // delete favorites
-upvoteQuestionRoute.delete(async (req,res)=>{
+upvoteAnswerRoute.delete(async (req,res)=>{
   let user_id = req.body.user_id;
   let id = req.body.id;
   try {

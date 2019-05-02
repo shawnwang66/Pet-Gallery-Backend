@@ -11,7 +11,7 @@ module.exports = function (app, router) {
     app.use('/api/question',require('./question.js'));
     app.use('/api/answer',require('./answer.js'));
     app.use('/api/upvoteq',require('./upvoteQuestion.js'));
-    app.use('/api/upvotea',require('./upvoteQuestion.js'));
+    app.use('/api/upvotea',require('./upvoteAnswer.js'));
 
 
 };

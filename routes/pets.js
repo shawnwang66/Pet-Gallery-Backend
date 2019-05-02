@@ -16,6 +16,7 @@ const statusCode = util.statusCode;
  * energy level is 0 to 2
  * reference:
  * https://stackoverflow.com/questions/26814456/how-to-get-all-the-values-that-contains-part-of-a-string-using-mongoose-find
+ * https://stackoverflow.com/questions/10811887/how-to-get-all-count-of-mongoose-model
  * we need to set options to i to use it as non case sensitive
  * for where we need to pass in {'input': queryString}
  */
@@ -81,29 +82,39 @@ petRoute.get((req, svrRes) => {
         }
     }
 
-    if (req.query.skip !== undefined) {
-        chain = chain.skip(JSON.parse(req.query.skip));
-    }
-
-    if (req.query.limit !== undefined) {
-        chain = chain.limit(JSON.parse(req.query.limit));
-    } else {
-        chain = chain.limit(100);
-    }
-
-
-    chain.find({}, (err, dbRes) => {
+    chain.countDocuments({}, (err, retCount) => {
         if (err)
             svrRes.status(statusCode.SERVER_ERR).send({
-               message: "Server error!",
-               data: {}
+                message: "Server error!",
+                data: {}
+            })
+        else {
+
+            if (req.query.skip !== undefined) {
+                chain = chain.skip(JSON.parse(req.query.skip));
+            }
+
+            if (req.query.limit !== undefined) {
+                chain = chain.limit(JSON.parse(req.query.limit));
+            } else {
+                chain = chain.limit(100);
+            }
+
+            chain.find({}, (err, dbRes) => {
+                if (err)
+                    svrRes.status(statusCode.SERVER_ERR).send({
+                        message: "Server error!",
+                        data: {}
+                    });
+                else
+                    svrRes.status(statusCode.OK).send({
+                        message: "OK",
+                        data: dbRes,
+                        count: retCount
+                    });
             });
-        else
-            svrRes.status(statusCode.OK).send({
-                message: "OK",
-                data: dbRes
-            });
-    });
+        }
+    })
 });
 
 petRoute.post((req, svrRes) => {

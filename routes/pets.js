@@ -140,31 +140,29 @@ petRoute.post((req, svrRes) => {
                             data: {}
                         });
                     } else {
-                        petMongoose.updateOne(
-                          {'_id':dbRes._id},
-                          {'location': res.location}, (err, finalRes)=> {
-                              if(err) {
-                                  svrRes.status(statusCode.SERVER_ERR).send({
-                                      message: "Server error!",
-                                      data: {}
-                                  });
-                              } else {
-                                  svrRes.status(statusCode.OK).send({
-                                      message: "OK",
-                                      data: dbRes
-                                  });
-                              }
+                        userMongoose.findOne(
+                          {'_id':user_id},
+                          (err, userRes) => {
+                              petMongoose.updateOne(
+                                {'_id':dbRes._id},
+                                {'location': userRes.location}, (err, finalRes)=> {
+                                    if(err) {
+                                        svrRes.status(statusCode.SERVER_ERR).send({
+                                            message: "Server error!",
+                                            data: {}
+                                        });
+                                    } else {
+                                        svrRes.status(statusCode.OK).send({
+                                            message: "OK",
+                                            data: dbRes
+                                        });
+                                    }
+                                }
+                              )
                           }
-                        )
+                        );
                     }
                 });
-
-            svrRes.status(statusCode.OK).send({
-                message: "OK",
-                data: dbRes
-            });
-
-
         }
 
     });

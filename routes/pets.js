@@ -134,7 +134,28 @@ petRoute.post((req, svrRes) => {
             userMongoose.updateOne(
                 {'_id':user_id},
                 {'$push':{petsCreated:dbRes._id}}, (err,res)=>{
-                    if(!err){
+                    if(err){
+                        svrRes.status(statusCode.SERVER_ERR).send({
+                            message: "Server error!",
+                            data: {}
+                        });
+                    } else {
+                        petMongoose.updateOne(
+                          {'_id':dbRes._id},
+                          {'location': res.location}, (err, finalRes)=> {
+                              if(err) {
+                                  svrRes.status(statusCode.SERVER_ERR).send({
+                                      message: "Server error!",
+                                      data: {}
+                                  });
+                              } else {
+                                  svrRes.status(statusCode.OK).send({
+                                      message: "OK",
+                                      data: dbRes
+                                  });
+                              }
+                          }
+                        )
                     }
                 });
 

@@ -10,6 +10,7 @@ var PetSchema = new mongoose.Schema({
 	gender: { type: String, default: 'unknown' },
 	owner: { type: String, required: true },
 	questions: [ String ],
+	location: [ String ],
 	favoritedBy: [ String ],
 	imageURLs: [ String ],
 	frontImageRatio: { type: Number },

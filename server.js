@@ -9,6 +9,10 @@ var express = require('express'),
 // Create our Express application
 var app = express();
 
+//
+var cors = require('cors');
+app.use(cors());
+
 // Use environment defined port or 4000
 var port = process.env.PORT || 4000;
 
@@ -24,6 +28,7 @@ var allowCrossDomain = function (req, res, next) {
     next();
 };
 app.use(allowCrossDomain);
+
 
 // Use the body-parser package in our application
 app.use(bodyParser.urlencoded({

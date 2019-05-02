@@ -9,5 +9,9 @@ module.exports = function (app, router) {
     app.use('/api/favorite', require('./favorite.js'));
     app.use('/api/image', require('./image.js'));
     app.use('/api/question',require('./question.js'));
-    app.use('/api/answer',require('./answer.js'))
+    app.use('/api/answer',require('./answer.js'));
+    app.use('/api/upvoteq',require('./upvoteQuestion.js'));
+    app.use('/api/upvotea',require('./upvoteQuestion.js'));
+
+
 };

@@ -24,7 +24,7 @@ const categoryMap = ['cat','dog'];
 petRoute.get((req, svrRes) => {
     let selectJSON = {};
     let chain = petMongoose.find({}, selectJSON);
-    
+
     if (req.query.where !== undefined) {
         let where = JSON.parse(req.query.where);
         chain = chain.find(where);
@@ -63,7 +63,8 @@ petRoute.get((req, svrRes) => {
 
     if (req.query.energyLevel !== undefined) {
         let energyLevel = JSON.parse(req.query.energyLevel);
-        chain = chain.find({"energyLevel": energyLevel});
+        const energyLevelMap = ['low', 'medium', 'high'];
+        chain = chain.find({"energyLevel": energyLevelMap[energyLevel]});
     }
 
     if (req.query.price !== undefined) {
@@ -194,6 +195,31 @@ petIDRoute.put((req, svrRes) => {
                 });
         });
 });
+
+petIDRoute.delete((req, svrRes) => {
+    const id = req.params.id;
+    if (!util.isIdValid(id))
+        svrRes.status(statusCode.NOT_FOUND).send({
+            message: `${id} is not a valid ID`,
+            data: {}
+        });
+    else {
+        petMongoose.deleteOne({'_id': id}, (err, dbRes) => {
+            if (err)
+                svrRes.status(statusCode.SERVER_ERR).send({
+                    message: "Server error!",
+                    data: {}
+                });
+            else
+                svrRes.status(statusCode.OK).send({
+                    message: "OK",
+                    data: dbRes
+                });
+        });
+    }
+});
+
+
 
 
 

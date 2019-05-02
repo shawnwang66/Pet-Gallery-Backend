@@ -11,7 +11,7 @@ const passport = require('passport');
 
 userDebugRoute.get(function (req, res) {
   try {
-    User.find({}, {'password': 0, 'email': 0, 'dateCreated': 0}, (err, ret) => {
+    User.find({}, {'password': 0, 'dateCreated': 0}, (err, ret) => {
       return res.status(200).send({
         message: "Success",
         data: ret

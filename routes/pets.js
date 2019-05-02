@@ -37,6 +37,7 @@ petRoute.get((req, svrRes) => {
                 {'name': {$regex: filter, $options: 'i'}},
                 {'breed': {$regex: filter, $options: 'i'}},
                 {'description': {$regex: filter, $options: 'i'}},
+                {'location': {$regex: filter, $options: 'i'}},
                 {'category': {$regex: filter, $options: 'i'}},
             ]});
 

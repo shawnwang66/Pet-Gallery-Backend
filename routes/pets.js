@@ -81,29 +81,44 @@ petRoute.get((req, svrRes) => {
         }
     }
 
-    if (req.query.skip !== undefined) {
-        chain = chain.skip(JSON.parse(req.query.skip));
-    }
-
-    if (req.query.limit !== undefined) {
-        chain = chain.limit(JSON.parse(req.query.limit));
+    if (req.query.count !== undefined && req.query.count === '1') {
+        chain.count({}, (err, retCount) => {
+            if (err)
+                svrRes.status(statusCode.SERVER_ERR).send({
+                    message: "Server error!",
+                    data: {}
+                })
+            else
+                svrRes.status(statusCode.OK).send({
+                    message: "OK",
+                    data: retCount
+                });
+        })
     } else {
-        chain = chain.limit(100);
+
+        if (req.query.skip !== undefined) {
+            chain = chain.skip(JSON.parse(req.query.skip));
+        }
+
+        if (req.query.limit !== undefined) {
+            chain = chain.limit(JSON.parse(req.query.limit));
+        } else {
+            chain = chain.limit(100);
+        }
+
+        chain.find({}, (err, dbRes) => {
+            if (err)
+                svrRes.status(statusCode.SERVER_ERR).send({
+                    message: "Server error!",
+                    data: {}
+                });
+            else
+                svrRes.status(statusCode.OK).send({
+                    message: "OK",
+                    data: dbRes
+                });
+        });
     }
-
-
-    chain.find({}, (err, dbRes) => {
-        if (err)
-            svrRes.status(statusCode.SERVER_ERR).send({
-               message: "Server error!",
-               data: {}
-            });
-        else
-            svrRes.status(statusCode.OK).send({
-                message: "OK",
-                data: dbRes
-            });
-    });
 });
 
 petRoute.post((req, svrRes) => {

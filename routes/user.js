@@ -69,7 +69,7 @@ userRoute.post(function (req, res) {
 
 userIDRoute.get(function (req, res) {
   try {
-    User.find({_id: req.params.id}, {'password': 0, 'email': 0, 'dateCreated': 0}, (err, ret) => {
+    User.find({_id: req.params.id}, {'password': 0, 'dateCreated': 0}, (err, ret) => {
       if (err) {
         return res.status(500).send({message: err});
       }
